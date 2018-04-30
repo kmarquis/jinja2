@@ -1,0 +1,7 @@
+{% for vlan, vlan_val in vlan.items() %}
+set vlans {{ vlan }} description "VLAN {{ vlan_val.description }}"
+set vlans {{ vlan }} vlan-id {{ vlan_val.vlanid }}
+{% if vlan_val.l3vlanid is defined %}
+set vlans {{ vlan }} l3-interface irb.{{ vlan_val.svi }}
+{% endif %}
+{% endfor %}
