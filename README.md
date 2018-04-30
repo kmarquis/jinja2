@@ -15,17 +15,17 @@ I use `virtualenv` but there plenty of over ways methods can be googled! To inst
 
 The necessay modules to run this renderer can be installed by running:
 ```
-(env) $ pip install requirements.txt
+(env)$ pip install -r requirements.txt
 ```
 ## Renderer 
 Once your environment is set, jinja2 template and YMAL data have been created. You will need to run the command below:
-```python
+```
 python3 renderer.py yaml_file j2_template
 ```
 
 The python script will render YAML data and Jinja2 template and print the output to screen.
-```python
-(env) $ python3 renderer.py  network/junos/vlan/data.yml network/junos/vlan/vlan.j2
+```
+(env)$ python3 renderer.py  network/junos/vlan/data.yml network/junos/vlan/vlan.j2
 set vlans Second_Floor description "VLAN SECOND FLOOR"
 set vlans Second_Floor vlan-id 2
 set vlans Fourth_Floor description "VLAN FOURTH FLOOR"
