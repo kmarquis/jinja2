@@ -1,0 +1,7 @@
+{% for swp in swp %}
+set interfaces {{ swp.name }} description "{{ swp.description }}"
+set interfaces {{ swp.name }} unit 0 family ethernet-switching interface-mode {{ swp.mode }}
+{% for vlan_membs in swp.vlan_members %}
+set interfaces {{ swp.name }} unit 0 family ethernet-switching vlan members {{ vlan_membs }}
+{% endfor %}
+{% endfor %}

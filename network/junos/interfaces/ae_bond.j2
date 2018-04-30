@@ -1,0 +1,14 @@
+{% for bondphy in bondphy %}
+set interfaces {{ bondphy.name }} description "{{ bondphy.description }}"
+set interfaces {{ bondphy.name }} ether-options 802.3ad {{ bondphy.ae }}
+{% endfor %}
+
+{% for bondae in bondae %}
+set interfaces {{ bondae.name }} description "{{ bondae.description }}"
+set interfaces {{ bondae.name }} aggregated-ether-options minimum-links {{ bondae.mini_links }}
+set interfaces {{ bondae.name }} aggregated-ether-options lacp active
+set interfaces {{ bondae.name }} unit 0 family ethernet-switching interface-mode {{ bondae.mode }}
+{% for vlan_membs in bondae.vlan_members %}
+set interfaces {{ bondae.name }} unit 0 family ethernet-switching vlan members {{ vlan_membs }}
+{% endfor %}
+{% endfor %}

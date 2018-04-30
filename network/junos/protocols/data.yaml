@@ -1,0 +1,11 @@
+---
+bgp:
+  - name: External
+    asn: 100
+    type: external
+    local_add: 10.10.10.1
+    peer:
+      - name: 192.168.100.20
+        description: AS-20
+      - name: 192.168.100.21
+        description: AS-21

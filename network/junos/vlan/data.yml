@@ -1,20 +1,20 @@
 ---
 vlan:
-  "Management":
+  - name: Management
     vlanid: 10
     description: MANAGEMENT
     svi: 10
-  "First_Floor":
+  - name: First_Floor
     vlanid: 1
     description: FIRST FLOOR
     svi: 1
-  "Second_Floor":
+  - name: Second_Floor
     vlanid: 2
     description: SECOND FLOOR
     svi: 2
-  "Third_Floor":
+  - name: Third_Floor
     vlanid: 3
     description: THIRD FLOOR
-  "Fourth_Floor":
+  - name: Fourth_Floor
     vlanid: 4
     description: FOURTH FLOOR
