@@ -1,0 +1,10 @@
+{% for l2vpn in l2vpn %}
+set routing-instances {{ l2vpn.name }} instance-type l2vpn
+set routing-instances {{ l2vpn.name }} interface {{ l2vpn.interface }}
+set routing-instances {{ l2vpn.name }} route-distinguisher {{ l2vpn.vrf_rd }}
+set routing-instances {{ l2vpn.name }} vrf-target target:{{ l2vpn.vrf_rt }}
+set routing-instances {{ l2vpn.name }} protocols l2vpn interface {{ l2vpn.interface }}
+set routing-instances {{ l2vpn.name }} protocols l2vpn encapsulation-type ethernet
+set routing-instances {{ l2vpn.name }} protocols l2vpn site {{ l2vpn.site }} site-identifier {{ l2vpn.site_id }}
+set routing-instances {{ l2vpn.name }} protocols l2vpn site {{ l2vpn.site }} interface {{ l2vpn.interface }} remote-site-id {{ l2vpn.remote }}
+{% endfor %}
