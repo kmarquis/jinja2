@@ -1,0 +1,9 @@
+---
+ l2vpn:
+     - name: DC-A-to-DC-B
+       vrf_rd: 100:0001
+       vrf_rt: 100:1001
+       site: DC-A
+       site_id: 1
+       interface: ge-0/0/0
+       remote: 2
