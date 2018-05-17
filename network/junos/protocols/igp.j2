@@ -1,13 +1,13 @@
 protocols {
     rsvp {
-{% for intf in igp.interface %}        
+{% for intf in igp.interface %}
         interface {{ intf }};
 {% endfor %}
     }
     mpls {
         explicit-null;
         no-decrement-ttl;
-{% for intf in igp.interface %} 
+{% for intf in igp.interface %}
         interface {{ intf }};
 {% endfor %}
     }
@@ -15,7 +15,7 @@ protocols {
         track-igp-metric;
         explicit-null;
         transport-address router-id;
-{% for intf in igp.interface %} 
+{% for intf in igp.interface %}
         interface {{ intf }};
 {% endfor %}
     }
@@ -34,10 +34,10 @@ protocols {
             point-to-point;
             node-link-protection;
         }
-{% if intf == 'lo0.0'%}
+{% endfor %}
+{% if igp.loopback is defined %}
         interface lo0.0;
 {% endif %}
-{% endfor %}
     }
     lldp {
         port-id-subtype interface-name;

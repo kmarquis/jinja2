@@ -1,0 +1,23 @@
+{% macro v4(ip) %}
+            family inet {
+                address {{ ip | ipaddr }};
+            }
+{% endmacro %}
+{% macro v6(ip) %}
+            family inet6 {
+                address {{ ip }};
+            }
+{% endmacro %}
+interfaces {
+    irb {
+{% for irb in irb %}
+        unit {{ irb.name }} {
+            description "{{ irb.description }}"";
+{% if irb.ipv4 is defined %}
+{{ v4(irb.ipv4) }}
+{% endif %}
+{% if irb.ipv6 is defined %}
+{{ v6(irb.ipv6) }}
+{% endif %}
+{% endfor %}
+}

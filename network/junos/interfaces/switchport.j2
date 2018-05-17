@@ -1,7 +1,24 @@
+interfaces {
 {% for swp in swp %}
+    {{ swp.name }} {
+        description "{{ swp.description }}";
+        unit {{ swp.unit }} {
+            family ethernet-switching {
+                interface-mode {{ swp.mode }};
+                vlan {
+{% for vlan_membs in swp.vlan_members %}
+                    members {{ vlan_membs }};
+{% endfor %}
+                }
+            }
+        }
+    }
+{% endfor %}
+}
+{#{% for swp in swp %}
 set interfaces {{ swp.name }} description "{{ swp.description }}"
 set interfaces {{ swp.name }} unit 0 family ethernet-switching interface-mode {{ swp.mode }}
 {% for vlan_membs in swp.vlan_members %}
 set interfaces {{ swp.name }} unit 0 family ethernet-switching vlan members {{ vlan_membs }}
 {% endfor %}
-{% endfor %}
+{% endfor %}#}
