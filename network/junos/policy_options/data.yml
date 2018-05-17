@@ -1,0 +1,17 @@
+---
+plist:
+  - name: List_A
+    subnets:
+      - 10.1.0.0/24
+      - 10.2.0.0/24
+      - 10.3.0.0/24
+  - name: List_B
+    subnets:
+      - 10.4.0.0/24
+      - 10.5.0.0/24
+      - 10.6.0.0/24
+comm:
+  - name: all
+    community: '*:*'
+  - name: new
+    community: 100:100
