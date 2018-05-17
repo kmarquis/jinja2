@@ -9,3 +9,10 @@ bgp:
         description: AS-20
       - name: 192.168.100.21
         description: AS-21
+igp:
+  interface:
+    - ge-0/0/0.0
+    - ae0.0
+    - ae1.0
+    - ae2.0
+    - lo0.0        

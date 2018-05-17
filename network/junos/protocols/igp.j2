@@ -1,0 +1,46 @@
+protocols {
+    rsvp {
+{% for intf in igp.interface %}        
+        interface {{ intf }};
+{% endfor %}
+    }
+    mpls {
+        explicit-null;
+        no-decrement-ttl;
+{% for intf in igp.interface %} 
+        interface {{ intf }};
+{% endfor %}
+    }
+    ldp {
+        track-igp-metric;
+        explicit-null;
+        transport-address router-id;
+{% for intf in igp.interface %} 
+        interface {{ intf }};
+{% endfor %}
+    }
+    isis {
+        reference-bandwidth 1000g;
+        overload {
+            timeout 240;
+            advertise-high-metrics;
+        }
+        level 1 disable;
+        level 2 {
+            wide-metrics-only;
+        }
+{% for intf in igp.interface %}
+        interface {{ intf }} {
+            point-to-point;
+            node-link-protection;
+        }
+{% if intf == 'lo0.0'%}
+        interface lo0.0;
+{% endif %}
+{% endfor %}
+    }
+    lldp {
+        port-id-subtype interface-name;
+        interface all;
+    }
+}
