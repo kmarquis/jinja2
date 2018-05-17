@@ -23,7 +23,6 @@ def main():
         env.filters['ipaddr'] = ipaddr
         tpl = env.get_template(sys.argv[2])
         print(tpl.render(data))
-        #print(env.render(data))
     except (TemplateSyntaxError, UndefinedError) as e:
         print('An Error has occured: {0}'.format(e))
 

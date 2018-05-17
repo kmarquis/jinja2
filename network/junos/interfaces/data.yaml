@@ -1,16 +1,19 @@
 ---
 swp:
   - name: ge-0/0/0
+    unit: 0
     description: First Floor
     mode: access
     vlan_members:
       - 100
   - name: ge-0/0/1
+    unit: 0
     description: Second Floor
     mode: access
     vlan_members:
       - 200
   - name: ge-0/0/2
+    unit: 0
     description: Third Floor
     mode: trunk
     vlan_members:

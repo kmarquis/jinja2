@@ -15,9 +15,11 @@ interfaces {
             description "{{ irb.description }}"";
 {% if irb.ipv4 is defined %}
 {{ v4(irb.ipv4) }}
-{% endif %}
+{%- endif %}
 {% if irb.ipv6 is defined %}
 {{ v6(irb.ipv6) }}
-{% endif %}
+{%- endif %}
+        }
 {% endfor %}
+    }
 }
