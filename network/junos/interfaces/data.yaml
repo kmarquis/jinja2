@@ -31,3 +31,14 @@ bondae:
     mode: access
     vlan_members:
       - 100
+irb:
+  - name: 500
+    description: L3 for vlan500
+    ipv4: 192.168.1.0/24
+    ipv6: 2001:192:168:1::0/64
+  - name: 600
+    description: L3 for vlan600
+    ipv4: 192.168.2.0/24
+  - name: 700
+    description: L3 for vlan500
+    ipv6: 2001:192:168:3::0/64  

@@ -3,14 +3,29 @@ import os
 import sys
 import yaml
 from huepy import *
+import netaddr
 from jinja2 import Environment, FileSystemLoader
+from jinja2.exceptions import *
+
+def ipaddr(network, attr=None):
+    netw = netaddr.IPNetwork(network)
+    if attr is not None:
+        return getattr(netw, attr)
+    else:
+        return netw
 
 def main():
-    data = yaml.load(open(sys.argv[1]))
-    template_dir = FileSystemLoader(os.path.dirname(os.path.realpath(__file__)))
-    env = Environment(loader=template_dir, trim_blocks=True, lstrip_blocks=True,
-    	keep_trailing_newline=True, newline_sequence='\n').get_template(sys.argv[2])
-    print(env.render(data))
+    try:
+        data = yaml.load(open(sys.argv[1]))
+        template_dir = FileSystemLoader(os.path.dirname(os.path.realpath(__file__)))
+        env = Environment(loader=template_dir, trim_blocks=True, lstrip_blocks=True,
+    	     keep_trailing_newline=True, newline_sequence='\n')
+        env.filters['ipaddr'] = ipaddr
+        tpl = env.get_template(sys.argv[2])
+        print(tpl.render(data))
+        #print(env.render(data))
+    except (TemplateSyntaxError, UndefinedError) as e:
+        print('An Error has occured: {0}'.format(e))
 
 if __name__ == '__main__':
      if len(sys.argv) < 3:
