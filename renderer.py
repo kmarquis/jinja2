@@ -8,7 +8,8 @@ from jinja2 import Environment, FileSystemLoader
 def main():
     data = yaml.load(open(sys.argv[1]))
     template_dir = FileSystemLoader(os.path.dirname(os.path.realpath(__file__)))
-    env = Environment(loader=template_dir, trim_blocks=True, lstrip_blocks=True).get_template(sys.argv[2])
+    env = Environment(loader=template_dir, trim_blocks=True, lstrip_blocks=True,
+    	keep_trailing_newline=True, newline_sequence='\n').get_template(sys.argv[2])
     print(env.render(data))
 
 if __name__ == '__main__':
