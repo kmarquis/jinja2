@@ -15,4 +15,5 @@ igp:
     - ae0.0
     - ae1.0
     - ae2.0
-    - lo0.0        
+  loopback:
+    - lo0.0
