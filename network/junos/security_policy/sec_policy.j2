@@ -13,7 +13,7 @@ security {
                     destination-address {{ dest }};
 {% endfor %}
 {% for appl in policy.application %}
-                    application any;
+                    application {{ appl }};
 {% endfor %}
                 }
                 then {

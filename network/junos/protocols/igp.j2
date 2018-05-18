@@ -36,7 +36,9 @@ protocols {
         }
 {% endfor %}
 {% if igp.loopback is defined %}
-        interface lo0.0;
+{% for loopback in igp.loopback %}
+        interface {{ loopback }};
+{% endfor %}
 {% endif %}
     }
     lldp {
