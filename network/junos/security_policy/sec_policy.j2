@@ -1,0 +1,28 @@
+security {
+    policies {
+{% for source in source %}
+{% for destination in source.destination %}
+        from-zone {{ source.name }} to-zone {{ destination.name }} {
+{% for policy in destination.policy %}
+            policy {{ policy.name }} {
+                match {
+{% for src in policy.src %}
+                    source-address {{ src }};
+{% endfor %}
+{% for dest in policy.dest%}
+                    destination-address {{ dest }};
+{% endfor %}
+{% for appl in policy.application %}
+                    application any;
+{% endfor %}
+                }
+                then {
+                    {{ policy.action }};
+                }
+            }
+{% endfor %}
+        }
+{% endfor %}
+{% endfor %}
+    }
+}
