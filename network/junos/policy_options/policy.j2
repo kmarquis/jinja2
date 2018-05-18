@@ -1,0 +1,12 @@
+policy-options {
+{% for plist in plist %}
+    prefix-list {{ plist.name }} {
+{% for subnets in plist.subnets %}
+        {{ subnets }};
+{% endfor %}
+    }
+{% endfor %}
+{% for comm in comm %}
+    community {{ comm.name }} members {{ comm.community }};
+{% endfor -%}    
+}
