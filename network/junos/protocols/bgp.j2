@@ -8,6 +8,10 @@ protocols {
 {% for peer in bgp.peer %}
             neighbor {{ peer.name }} {
                 description "{{ peer.description }}";
+                peer-as {{ peer.asn }};
+{%if peer.md5 is defined %}
+                authentication-key "{{ peer.md5 }}";
+{% endif %}
             }
 {% endfor %}
         }

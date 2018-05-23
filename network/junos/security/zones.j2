@@ -1,0 +1,27 @@
+security {
+    zones {
+{%for zone in zones %}
+        security-zone {{ zone.name }} {
+            host-inbound-traffic {
+                system-services {
+{% for system in zone.system %}
+                    {{ system }};
+{% endfor %}
+               }
+{% if zone.protocols is defined %}
+                protocols {
+{% for protocols in zone.protocols %}
+                    {{ protocols }};
+{% endfor %}
+                }
+{% endif %}
+            }
+            interfaces {
+{% for intf in zone.interfaces %}
+                {{ intf }};
+{% endfor %}
+            }
+        }
+{% endfor %}
+    }
+}
