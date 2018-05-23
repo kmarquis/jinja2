@@ -1,5 +1,5 @@
 {% for ike_ipsec in ike_ipsec %}
-set security ike proposal {{ ike_ipsec.name }} authentication-method pre-shared-keys
+set security ike proposal {{ ike_ipsec.name |lower }} authentication-method pre-shared-keys
 set security ike proposal {{ ike_ipsec.name }} dh-group group20
 set security ike proposal {{ ike_ipsec.name }} authentication-algorithm sha-384
 set security ike proposal {{ ike_ipsec.name }} encryption-algorithm aes-256-cbc
