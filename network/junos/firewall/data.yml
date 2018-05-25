@@ -1,0 +1,65 @@
+---
+firewall:
+  family:
+    - name: inet
+      acl:
+        - name: protect-re
+          term:
+            - name: ssh
+              src:
+                - ssh-addresses
+              protocol:
+                - tcp
+                - udp
+              port:
+                - 22
+                - ssh
+              action: accept
+            - name: snmp
+              dest:
+                - snmp-addresses
+              protocol:
+                - udp
+              port:
+                - 161
+              action: accept
+        - name: web
+          term:
+            - name: web
+              dest:
+                - webservers
+              protocol:
+                - tcp
+              port:
+                - 80
+                - 443
+              action: accept
+    - name: inet6
+      acl:
+        - name: protect-re
+          term:
+            - name: ssh
+              src:
+                - ssh-addresses
+              protocol:
+                - tcp
+                - udp
+              port:
+                - 22
+                - ssh
+              action: accept
+            - name: snmp
+              dest:
+                - snmp-addresses
+              port:
+                - 161
+              action: accept
+        - name: web
+          term:
+            - name: web
+              dest:
+                - webservers
+              port:
+                - 80
+                - 443
+              action: accept                 

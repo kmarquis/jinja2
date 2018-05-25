@@ -4,15 +4,15 @@ import sys
 import yaml
 from passlib.hash import pbkdf2_sha1, md5_crypt
 from huepy import *
+import socket
 import ipaddress
 import netaddr
 from jinja2 import Environment, FileSystemLoader
 from jinja2.exceptions import *
 
-def ipad(network, attr=None):
-    net = ipaddress.IPv4Network(network)
-    net.with_prefixlen
-    return net[-2]
+def ipad(network):
+    net = ipaddress.ip_network(network)
+    return net
 
 def ipaddr(network, attr=None):
     netw = netaddr.IPNetwork(network)
