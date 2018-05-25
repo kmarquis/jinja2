@@ -1,0 +1,42 @@
+firewall {
+{%-for fw in firewall.family %} 
+    family {{ fw.name }} {
+     {%for acl in fw.acl %}
+        filter {{ acl.name|upper }} {
+         {%-for term in acl.term %}            
+            term {{ term.name|upper }} {
+                from {
+                 {%if term.get('src')%}
+                    source-prefix-list {
+                      {%for src in term.get('src')%}
+                        {{ src|upper }};
+                          {%endfor%}
+                    }
+                            {%endif%}
+                  {%if term.get('dest')%}
+                    destination-prefix-list {
+                     {%for dest in term.get('dest')%}
+                        {{ dest|upper }};
+                          {%endfor%}
+                    }
+                            {%endif%}
+                  {%if fw.get('name') == 'inet' %}
+                   {%for proto in term.get('protocol')%}
+                    protocol {{ proto }};
+                      {%endfor%}
+                        {%endif%}
+                  {%for port in term.get('port')%}
+                    port {{ port }};
+                     {%endfor%}
+                }
+                then {
+                    count COUNT-{{ term.name|upper }};
+                    {{ term.action }};
+                }
+            }
+        {%endfor%}
+        }
+    {%endfor%}
+    }
+{%endfor%}
+}
