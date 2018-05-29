@@ -1,6 +1,6 @@
 {% macro v4(ip) %}
             family inet {
-                address {{ ip | ipaddr }};
+                address {{ ip }};
             }
 {% endmacro %}
 {% macro v6(ip) %}

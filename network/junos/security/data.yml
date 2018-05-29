@@ -1,0 +1,65 @@
+---
+source:
+  - name: trust
+    destination:
+      - name: untrust
+        policy:
+          - name: ALLOW-ALL
+            src:
+             - any
+            dest:
+             - any
+            application:
+             - any
+            action: permit
+          - name: ALLOW-NEWS
+            src:
+             - BBC
+             - CNN
+             - SKY
+            dest:
+             - any
+            application:
+             - any
+            action: permit
+address_book:
+  - name: global
+    entries:
+      - name: srx1
+        prefix: 10.1.1.0/24
+      - name: srx3
+        prefix: 10.1.2.0/24
+      - name: srx2
+        prefix: 10.1.3.0/24
+    add_set:
+      - name: srx
+        set:
+          - srx1
+          - srx3
+  - name: non_global
+    entries:
+      - name: srx4
+        prefix: 10.1.4.0/24
+      - name: srx5
+        prefix: 10.1.5.0/24
+      - name: srx6
+        prefix: 10.1.6.0/24
+zones:
+  - name: wan
+    system:
+      - netconf
+      - ping
+      - ssh
+    interfaces:
+      - ge-0/0/0.300
+      - ge-0/0/1.240
+  - name: lan
+    system:
+      - ping
+    protocols:
+      - bgp
+      - ospf
+      - pim
+    interfaces:
+      - ge-0/0/0.100
+      - ge-0/0/1.200                
