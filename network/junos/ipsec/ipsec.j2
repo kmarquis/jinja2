@@ -1,4 +1,47 @@
+security {
 {% for ike_ipsec in ike_ipsec %}
+    ike {
+        proposal {{ ike_ipsec.name|upper }} {
+            authentication-method pre-shared-keys;
+            dh-group group20;
+            authentication-algorithm sha-384;
+            encryption-algorithm aes-256-cbc;
+        }
+        policy {{ ike_ipsec.name|upper }} {
+            mode main;
+            proposals {{ ike_ipsec.name|upper }};
+            pre-shared-key ascii-text {{ ike_ipsec.password }};
+        }
+        gateway {{ ike_ipsec.ike_gw }} {
+            ike-policy {{ ike_ipsec.name|upper }};
+            address {{ ike_ipsec.peer }};
+            external-interface {{ ike_ipsec.ext_intf }};
+{% if ike_ipsec.get('version')%}
+            version {{ ike_ipsec.version }};
+{%endif%}
+        }
+    }
+    ipsec {
+        proposal {{ ike_ipsec.name }} {
+            protocol esp;
+            authentication-algorithm hmac-sha-256-128;
+            encryption-algorithm aes-256-cbc;
+        }
+        policy {{ ike_ipsec.name }} {
+            proposals {{ ike_ipsec.name }};
+        }
+        vpn {{ ike_ipsec.ipsec_vpn_name }} {
+            bind-interface {{ ike_ipsec.tunnel_intf }};
+            ike {
+                gateway {{ ike_ipsec.ike_gw }};
+                ipsec-policy {{ ike_ipsec.name }};
+            }
+            establish-tunnels immediately;
+        }
+    }
+{% endfor %}
+}
+{#{% for ike_ipsec in ike_ipsec %}
 set security ike proposal {{ ike_ipsec.name |lower }} authentication-method pre-shared-keys
 set security ike proposal {{ ike_ipsec.name }} dh-group group20
 set security ike proposal {{ ike_ipsec.name }} authentication-algorithm sha-384
@@ -20,4 +63,4 @@ set security ipsec vpn {{ ike_ipsec.ipsec_vpn_name }} bind-interface {{ ike_ipse
 set security ipsec vpn {{ ike_ipsec.ipsec_vpn_name }} ike gateway {{ ike_ipsec.ike_gw }}
 set security ipsec vpn {{ ike_ipsec.ipsec_vpn_name }} ike ipsec-policy {{ ike_ipsec.name }}
 set security ipsec vpn {{ ike_ipsec.ipsec_vpn_name }} establish-tunnels immediately
-{% endfor %}
+{% endfor %}#}
