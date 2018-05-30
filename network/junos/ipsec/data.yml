@@ -3,7 +3,7 @@ ike_ipsec:
   - name: "VPN-TEST"
     password: ThisIsMySuperStrongPassword
     peer: 172.26.30.1
-    version: v2-only
+#    version: v2-only
     ext_intf: ge-0/0/1
     ike_gw: PEER-VPN
     ipsec_vpn_name: TO-PEER-VPN
