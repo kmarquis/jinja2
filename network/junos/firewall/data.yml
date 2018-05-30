@@ -62,4 +62,11 @@ firewall:
               port:
                 - 80
                 - 443
-              action: accept                 
+              action: accept
+policer:
+  - name: 100m-limit
+    limit: 100m
+    burst: 250k
+  - name: 200m-limit
+    percent: 20
+    burst: 250k        
