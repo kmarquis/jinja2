@@ -29,6 +29,11 @@ bondphy:
     ae: ae0
 bondae:
   - name: ae0
+    child:
+      desc: memeber of ae0
+      intf:
+        - ge-0/0/3
+        - ge-0/0/4
     description: some ae0
     mini_links: 1
     mode: access

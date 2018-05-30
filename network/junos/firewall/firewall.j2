@@ -39,4 +39,20 @@ firewall {
     {%endfor%}
     }
 {%endfor%}
+{%if policer %}
+  {%for rate in policer %}
+    policer {{ rate.name|upper }} {
+        if-exceeding {
+            {%if rate.get('percent')%}
+            bandwidth-percent {{ rate.percent }};
+            burst-size-limit {{ rate.burst }};
+            {%else%}
+            bandwidth-limit {{ rate.limit }};
+            burst-size-limit {{ rate.burst }};
+            {%endif%}
+        }
+        then discard;
+    }
+  {%endfor%}
+{%endif%}
 }
