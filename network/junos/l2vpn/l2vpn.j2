@@ -1,4 +1,36 @@
+routing-instances {
 {% for l2vpn in l2vpn %}
+    {{ l2vpn.name }} {
+        instance-type l2vpn;
+     {% for item in l2vpn.protocol %}
+        {% for intf in item.interface %}
+        interface {{ intf.name }};
+          {% endfor %}
+        {% endfor %}
+        route-distinguisher {{ l2vpn.vrf_rd }};
+        vrf-target target:{{ l2vpn.vrf_rt }};
+        protocols {
+            l2vpn {
+             {%for proto in l2vpn.protocol %}
+                encapsulation-type {{ proto.encap }};
+                  {% for intf in proto.interface %}
+                interface {{ intf.name }};
+                    {% endfor %}
+                site {{ proto.name }} {
+                    site-identifier {{ proto.site_id }};
+                       {% for intf in proto.interface %}
+                    interface {{ intf.name }} {
+                        remote-site-id {{ intf.remote }};
+                    }
+                   {%endfor %}
+                }
+               {%endfor%}
+            }
+        }
+    }
+{% endfor %}
+}
+{# {% for l2vpn in l2vpn %}
 set routing-instances {{ l2vpn.name }} instance-type l2vpn
 set routing-instances {{ l2vpn.name }} interface {{ l2vpn.interface }}
 set routing-instances {{ l2vpn.name }} route-distinguisher {{ l2vpn.vrf_rd }}
@@ -8,3 +40,4 @@ set routing-instances {{ l2vpn.name }} protocols l2vpn encapsulation-type ethern
 set routing-instances {{ l2vpn.name }} protocols l2vpn site {{ l2vpn.site }} site-identifier {{ l2vpn.site_id }}
 set routing-instances {{ l2vpn.name }} protocols l2vpn site {{ l2vpn.site }} interface {{ l2vpn.interface }} remote-site-id {{ l2vpn.remote }}
 {% endfor %}
+ #}

@@ -1,0 +1,79 @@
+security {
+    nat {
+		static {
+        {%for static in static %}
+		    rule-set {{ static.name }} {
+		        from zone {{  }};
+		        rule {{  }} {
+		            match {
+		                destination-address-name {{  }};
+		            }
+		            then {
+		                static-nat {
+		                    prefix-name {
+		                        {{  }};
+		                    }
+		                }
+		            }
+		        }
+		    }
+        {%endfor%}
+		}
+        source {
+            pool {{  }} {
+                address {
+                    {{  }};
+                }
+            }
+            rule-set {{  }} {
+                description "{{  }}";
+                from zone {{  }};
+                to zone {{  }};
+                rule {{  }} {
+                    match {
+                        source-address-name {{  }};
+                    }
+                    then {
+                        source-nat {
+                            pool {
+                                {{  }};
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        destination {
+            pool {{  }} {
+{%if get.('port')%}
+                address {{  }} port {{  }};
+{%else%}
+                address {{  }};
+{%endif%}
+            }
+            rule-set {{  }} {
+            	description "{{ }}";
+                from zone {{ }};
+                rule {{ }} {
+                    match {
+                        destination-address {{ }};
+
+                        destination-port {
+                            {{ }};
+                        }
+
+                        protocol {{  }};
+                    }
+                    then {
+                        destination-nat {
+                            pool {
+                                {{  }};
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}	
+

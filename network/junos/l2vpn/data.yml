@@ -1,9 +1,22 @@
 ---
- l2vpn:
-     - name: DC-A-to-DC-B
-       vrf_rd: 100:0001
-       vrf_rt: 100:1001
-       site: DC-A
-       site_id: 1
-       interface: ge-0/0/0
-       remote: 2
+l2vpn:
+   - name: SRX1-SRX3
+     vrf_rd: 100:0001
+     vrf_rt: 100:1001
+     protocol:
+       - name: SRX1
+         encap: ethernet
+         site_id: 1
+         interface: 
+          - name: ge-0/0/3
+            remote: 2
+   - name: SRX1-SRX3
+     vrf_rd: 100:0002
+     vrf_rt: 100:1001
+     protocol:
+       - name: SRX3
+         encap: ethernet
+         site_id: 2
+         interface:
+          - name: ge-0/0/3
+            remote: 1
