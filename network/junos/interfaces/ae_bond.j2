@@ -1,8 +1,38 @@
+interfaces {
+{% for bondaes in bondae %}
+   {% for intf in bondaes.child.intf %}
+    {{ intf }} {
+        description "{{ bondaes.child.desc }}";
+        gigether-options {
+            802.3ad {{ bondaes.name }};
+        }
+    }
+     {% endfor %}
+    {{ bondaes.name }} {
+        description "{{ bondaes.description }}";
+        aggregated-ether-options {
+            minimum-links {{ bondaes.mini_links }};
+            lacp {
+                active;
+            }
+        }
+        unit {{ bondaes.unit }} {
+            family ethernet-switching {
+                interface-mode {{ bondaes.mode }};
+                vlan {
+                 {% for vlan_membs in bondaes.vlan_members %}
+                    members {{ vlan_membs }};
+                   {% endfor %}
+                }
+            }
+        }
+    }
+{%endfor%}
+}
 {# {% for bondphy in bondphy %}
 set interfaces {{ bondphy.name }} description "{{ bondphy.description }}"
 set interfaces {{ bondphy.name }} ether-options 802.3ad {{ bondphy.ae }}
-{% endfor %} #}
-
+{% endfor %}
 {% for bondaes in bondae %}
 {% for intf in bondaes.child.intf %}
 set interfaces {{ intf }} description "{{ bondaes.child.desc }}"
@@ -15,4 +45,4 @@ set interfaces {{ bondaes.name }} unit 0 family ethernet-switching interface-mod
 {% for vlan_membs in bondaes.vlan_members %}
 set interfaces {{ bondaes.name }} unit 0 family ethernet-switching vlan members {{ vlan_membs }}
 {% endfor %}
-{% endfor %}
+{% endfor %}#}

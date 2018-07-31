@@ -20,13 +20,6 @@ swp:
       - 100
       - 200
       - 300
-bondphy:
-  - name: ge-0/0/3
-    description: memeber of ae0
-    ae: ae0
-  - name: ge-0/0/4
-    description: memeber of ae0
-    ae: ae0
 bondae:
   - name: ae0
     child:
@@ -35,6 +28,7 @@ bondae:
         - ge-0/0/3
         - ge-0/0/4
     description: some ae0
+    unit: 0
     mini_links: 1
     mode: access
     vlan_members:
