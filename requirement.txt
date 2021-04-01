@@ -3,7 +3,7 @@ bcrypt==3.1.4
 certifi==2018.4.16
 cffi==1.11.5
 chardet==3.0.4
-cryptography==2.2.2
+cryptography==3.2
 future==0.16.0
 huepy==0.9.8.1
 idna==2.6
