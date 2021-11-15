@@ -1,0 +1,125 @@
+set system host-name "{{ system.hostname }}"
+set system domain-name "{{ system.domain_name }}"
+set system time-zone "{{ system.time_zone }}"
+set system ports console log-out-on-disconnect
+{% for nameservers in system.name_server %}
+set system name-server {{ nameservers }}
+{% endfor %}
+{% for class in system.login.classes %}
+set system login class {{ class.name }} idle-timeout 30
+set system login class {{ class.name }} permissions {{ class.permissions }}
+{% endfor %}
+{% for user in system.users %}
+set system login user {{ user.user }} full-name "{{ user.name }}"
+set system login user {{ user.user }} uid {{ user.uid }}
+set system login user {{ user.user }} class {{ user.class }}
+  {% if user.ssh_rsa is defined %}
+set system login user {{ user.user }} authentication ssh-rsa "{{ user.ssh_rsa }}"
+  {% endif %}
+set system login user {{ user.user }} authentication encrypted-password "{{ user.password }}"
+{% endfor %}
+{% if "ssh" in system.services.keys() %}
+set system services ssh protocol-version {{ system.services.ssh.version }}
+set system services ssh max-sessions-per-connection {{ system.services.ssh.max_session }}
+set system services ssh connection-limit {{ system.services.ssh.connection_limit }}
+{% endif %}
+{% if "netconf" in system.services.keys() %}
+  {% if system.services.netconf.ssh is defined %}
+set system services netconf ssh
+  {% endif %}
+{% endif %}
+set system syslog archive size 1m
+set system syslog archive files 10
+set system syslog user * any emergency
+set system syslog host {{ system.syslog.host }} any any
+set system syslog host {{ system.syslog.host }} explicit-priority
+set system syslog file messages any notice
+set system syslog file messages authorization info
+set system syslog file interactive-commands interactive-commands info
+set system syslog file default-log-messages any info
+set system syslog file default-log-messages match "(requested 'commit' operation)|(copying configuration to juniper.save)|(commit complete)|ifAdminStatus|(FRU power)|(FRU removal)|(FRU insertion)|(link UP)|transitioned|Transferred|transfer-file|(license add)|(license delete)|(package -X update)|(package -X delete)|(FRU Online)|(FRU Offline)|(plugged in)|(unplugged)|CFMD_CCM_DEFECT| LFMD_3AH | RPD_MPLS_PATH_BFD|(Master Unchanged, Members Changed)|(Master Changed, Members Changed)|(Master Detected, Members Changed)|(vc add)|(vc delete)|(Master detected)|(Master changed)|(Backup detected)|(Backup changed)|(interface vcp-)|(AIS_DATA_AVAILABLE)"
+set system syslog file default-log-messages structured-data
+{% for ntpservers in system.ntp %}
+set system ntp server {{ ntpservers }}
+{% endfor %}
+
+{#
+host-name "{{ system.hostname }}";
+domain-name "{{ system.domain_name }}";
+time-zone "{{ system.time_zone }}";
+ports {
+    console log-out-on-disconnect;
+}
+root-authentication {
+    encrypted-password "$1$2l9UPwLN$3rozbY2lNffyW54ICsbha/"; ## SECRET-DATA
+}
+
+name-server {
+{% for nameservers in system.name_server %}
+    {{ nameservers }};
+{% endfor %}
+}
+login {
+{% for class in system.login.classes %}
+    class { class.name }} {
+        idle-timeout 30;
+        permissions {{ class.permissions }};
+{% endfor %}
+    }
+{% for user in system.users %}
+    user {{ user.user }} {
+        full-name "{{ user.name }}";
+        uid {{ user.uid }};
+        class {{ user.class }};
+        authentication {
+            encrypted-password "{{ user.password }}";
+  {% if user.ssh_rsa is defined %}
+            ssh-rsa "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC39Hmbdwey8joSDQvVYNdnGR1U5YNGD616DU6pArRnhAjAxGetLfr4Phmd8dg5eTxKgomNe0148lJi7ySG1PomQUIyoKDy36n+6eroa5Sb0vK4eW+C1/L8uSAsBRyHfh5jW5pVtKVWKsx40ULAjPwrf0f2SYbC02bVBcjPvs8FO2hT2PtaVb5BLBkvovwnz62H8E4WWRz2S24Q3Ur26ZVmtZAhz1P6rO0+THypA1F6/ObDSn5NlbYKVxsx0ZGjEdjwczCHYSKUKpGwq2iYeIaEQdWiu5jSrPQaOv1u9wj1QAwnvxwrFOITMLypT9QV8V/vwt9r/hhnulSgwAewE7CP kmarquis@MacBook-Pro.home";
+  {% endif %}
+        }
+    }
+{% endfor %}
+}
+services {
+{% if "ssh" in system.services.keys() %}    
+    ssh {
+        protocol-version v2;
+        max-sessions-per-connection 10;
+    }
+{% endif %}
+{% if "netconf" in system.services.keys() %}
+    netconf {
+  {% if system.services.netconf.ssh is defined %}
+        ssh;
+  {% endif %}
+    }
+{% endif %}
+}
+syslog {
+    archive size 1m files 10;
+    user * {
+        any emergency;
+    }
+    host {{ system.syslog.host }} {
+        any any;
+        explicit-priority;
+    }
+    file messages {
+        any notice;
+        authorization info;
+    }
+    file interactive-commands {
+        interactive-commands info;
+    }
+    file default-log-messages {
+        any info;
+        match "(requested 'commit' operation)|(copying configuration to juniper.save)|(commit complete)|ifAdminStatus|(FRU power)|(FRU removal)|(FRU insertion)|(link UP)|transitioned|Transferred|transfer-file|(license add)|(license delete)|(package -X update)|(package -X delete)|(FRU Online)|(FRU Offline)|(plugged in)|(unplugged)|CFMD_CCM_DEFECT| LFMD_3AH | RPD_MPLS_PATH_BFD|(Master Unchanged, Members Changed)|(Master Changed, Members Changed)|(Master Detected, Members Changed)|(vc add)|(vc delete)|(Master detected)|(Master changed)|(Backup detected)|(Backup changed)|(interface vcp-)|(AIS_DATA_AVAILABLE)";
+        structured-data;
+    }
+}
+ntp {
+{% for ntpservers in system.ntp %}
+    server {{ ntpservers }};
+{% endfor %}
+}
+#}

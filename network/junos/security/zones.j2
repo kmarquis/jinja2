@@ -1,27 +1,43 @@
+{% for zone in zones %}
+  {% for system in zone.system %}
+set security zones security-zone {{ zone.name }} host-inbound-traffic system-services {{ system }}
+  {% endfor %}
+  {% if zone.protocols is defined %}
+    {% for protocols in zone.protocols %}
+set security zones security-zone {{ zone.name }} host-inbound-traffic protocols {{ protocols }}
+    {% endfor %}
+  {% endif %}
+  {% for intf in zone.interfaces %}
+set security zones security-zone {{ zone.name }} interfaces  {{ intf }}
+  {% endfor %}
+{% endfor %}
+{# 
 security {
+    replace:
     zones {
 {%for zone in zones %}
         security-zone {{ zone.name }} {
             host-inbound-traffic {
                 system-services {
-{% for system in zone.system %}
+  {% for system in zone.system %}
                     {{ system }};
-{% endfor %}
+  {% endfor %}
                }
-{% if zone.protocols is defined %}
+  {% if zone.protocols is defined %}
                 protocols {
-{% for protocols in zone.protocols %}
+    {% for protocols in zone.protocols %}
                     {{ protocols }};
-{% endfor %}
+    {% endfor %}
                 }
-{% endif %}
+  {% endif %}
             }
             interfaces {
-{% for intf in zone.interfaces %}
+  {% for intf in zone.interfaces %}
                 {{ intf }};
-{% endfor %}
+  {% endfor %}
             }
         }
 {% endfor %}
     }
 }
+#}

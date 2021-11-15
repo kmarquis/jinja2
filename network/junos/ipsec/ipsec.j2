@@ -1,3 +1,27 @@
+{% for ike_ipsec in ike_ipsec %}
+set security ike proposal {{ ike_ipsec.name |lower }} authentication-method pre-shared-keys
+set security ike proposal {{ ike_ipsec.name }} dh-group group20
+set security ike proposal {{ ike_ipsec.name }} authentication-algorithm sha-384
+set security ike proposal {{ ike_ipsec.name }} encryption-algorithm aes-256-cbc
+set security ike policy {{ ike_ipsec.name }} mode main
+set security ike policy {{ ike_ipsec.name }} proposals {{ ike_ipsec.name }}
+set security ike policy {{ ike_ipsec.name }} pre-shared-key ascii-text {{ ike_ipsec.password }}
+set security ike gateway {{ ike_ipsec.ike_gw }} ike-policy {{ ike_ipsec.name }}
+set security ike gateway {{ ike_ipsec.ike_gw }} address {{ ike_ipsec.peer }}
+set security ike gateway {{ ike_ipsec.ike_gw }} external-interface {{ ike_ipsec.ext_intf }}
+  {% if ike_ipsec.version is defined %}
+set security ike gateway {{ ike_ipsec.ike_gw }} version {{ ike_ipsec.version }}
+  {% endif %}
+set security ipsec proposal {{ ike_ipsec.name }} protocol esp
+set security ipsec proposal {{ ike_ipsec.name }} authentication-algorithm hmac-sha-256-128
+set security ipsec proposal {{ ike_ipsec.name }} encryption-algorithm aes-256-cbc
+set security ipsec policy {{ ike_ipsec.name }} proposals {{ ike_ipsec.name }}
+set security ipsec vpn {{ ike_ipsec.ipsec_vpn_name }} bind-interface {{ ike_ipsec.tunnel_intf }}
+set security ipsec vpn {{ ike_ipsec.ipsec_vpn_name }} ike gateway {{ ike_ipsec.ike_gw }}
+set security ipsec vpn {{ ike_ipsec.ipsec_vpn_name }} ike ipsec-policy {{ ike_ipsec.name }}
+set security ipsec vpn {{ ike_ipsec.ipsec_vpn_name }} establish-tunnels immediately
+{% endfor %}
+{#
 security {
 {% for ike_ipsec in ike_ipsec %}
     ike {
@@ -41,26 +65,4 @@ security {
     }
 {% endfor %}
 }
-{#{% for ike_ipsec in ike_ipsec %}
-set security ike proposal {{ ike_ipsec.name |lower }} authentication-method pre-shared-keys
-set security ike proposal {{ ike_ipsec.name }} dh-group group20
-set security ike proposal {{ ike_ipsec.name }} authentication-algorithm sha-384
-set security ike proposal {{ ike_ipsec.name }} encryption-algorithm aes-256-cbc
-set security ike policy {{ ike_ipsec.name }} mode main
-set security ike policy {{ ike_ipsec.name }} proposals {{ ike_ipsec.name }}
-set security ike policy {{ ike_ipsec.name }} pre-shared-key ascii-text {{ ike_ipsec.password }}
-set security ike gateway {{ ike_ipsec.ike_gw }} ike-policy {{ ike_ipsec.name }}
-set security ike gateway {{ ike_ipsec.ike_gw }} address {{ ike_ipsec.peer }}
-set security ike gateway {{ ike_ipsec.ike_gw }} external-interface {{ ike_ipsec.ext_intf }}
-{% if ike_ipsec.version is defined %}
-set security ike gateway {{ ike_ipsec.ike_gw }} version {{ ike_ipsec.version }}
-{% endif %}
-set security ipsec proposal {{ ike_ipsec.name }} protocol esp
-set security ipsec proposal {{ ike_ipsec.name }} authentication-algorithm hmac-sha-256-128
-set security ipsec proposal {{ ike_ipsec.name }} encryption-algorithm aes-256-cbc
-set security ipsec policy {{ ike_ipsec.name }} proposals {{ ike_ipsec.name }}
-set security ipsec vpn {{ ike_ipsec.ipsec_vpn_name }} bind-interface {{ ike_ipsec.tunnel_intf }}
-set security ipsec vpn {{ ike_ipsec.ipsec_vpn_name }} ike gateway {{ ike_ipsec.ike_gw }}
-set security ipsec vpn {{ ike_ipsec.ipsec_vpn_name }} ike ipsec-policy {{ ike_ipsec.name }}
-set security ipsec vpn {{ ike_ipsec.ipsec_vpn_name }} establish-tunnels immediately
-{% endfor %}#}
+#}
