@@ -1,3 +1,33 @@
+{% for static in static %}
+set security nat static rule-set {{ static.name }} from zone {{ }} rule {{ }} match destination-address-name {{ }}
+set security nat static rule-set {{ static.name }} from zone {{ }} rule {{ }} then static-nat prefix-name {{ }}
+{% endfor %}
+
+{%%}
+set security nat source pool {{  }} address {{ }}
+  {% if "no_translation" is defined %}
+set security nat source pool {{  }} port no-translation
+  {% endif %}
+{% endfor %}
+set security nat source rule-set {{  }} description "{{  }}"
+set security nat source rule-set {{  }} from zone {{  }}
+set security nat source rule-set {{  }} to zone {{  }}
+set security nat source rule-set {{  }} rule {{  }} match source-address {{  }}
+set security nat source rule-set {{  }} rule {{  }} then source-nat pool {{  }}
+{%%}
+set security nat source rule-set {{  }} rule {{  }} then source-nat interface
+{% endif %}
+
+set security nat destination pool {{  }} address {{  }}
+
+set security nat destination rule-set {{  }} description "{{  }}"
+set security nat destination rule-set {{  }} from zone {{  }}
+set security nat destination rule-set {{  }} rule nintendo-switch match destination-address {{0.0.0.0/0}}
+set security nat destination rule-set {{  }} rule nintendo-switch match destination-port {{45000}} to {{65535}}
+set security nat destination rule-set {{  }} rule nintendo-switch match protocol tcp
+set security nat destination rule-set {{  }} rule nintendo-switch then {{ }} pool {{  }}
+
+{#
 security {
     nat {
 		static {
@@ -76,4 +106,4 @@ security {
         }
     }
 }	
-
+#}

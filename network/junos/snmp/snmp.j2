@@ -1,3 +1,24 @@
+set snmp name "{{ snmp.name }}"
+set snmp location "{{ snmp.location }}"
+set snmp contact "{{ snmp.contact }}"
+{% for user in snmp.user %}
+set snmp v3 usm local-engine user {{ user.name }} authentication-sha authentication-key "{{ user.sha_auth|sha }}"
+set snmp v3 usm local-engine user {{ user.name }} priv_aes128 privacy-key "{{ user.priv_aes128 }}"
+{% endfor %}
+{% for vacm in snmp.vacm %}
+set snmp v3 vacm security-to-group security-model usm security-name {{ vacm.name }} group {{ vacm.group }}
+{% endfor %}
+set snmp v3 vacm access group all default-context-prefix security-model usm security-level privacy read-view all notify-view all
+set snmp v3 engine-id use-mac-address
+set snmp v3 view all oid .1 include
+{% for community in snmp.community %}
+  {% for clients in snmp.clients %}
+    {% for clients in snmp.clients %}
+set snmp community {{ community.name }} view all authorization read-only clients {{ clients }}
+    {% endfor %}
+  {% endfor %}
+{% endfor %}
+{#
 snmp {
     name "{{ snmp.name }}";
     location "{{ snmp.location }}";
@@ -52,11 +73,14 @@ snmp {
         view all;
         authorization read-only;
         clients {
-{% for clients in snmp.clients %}
+  {% for clients in snmp.clients %}
             {{ clients }};
-{% endfor %}
+  {% endfor %}
         }
     }
 {% endfor %}
 }
+#}
+
+
 

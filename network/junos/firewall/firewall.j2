@@ -1,3 +1,41 @@
+{%-for fw in firewall.family %}
+  {%for acl in fw.acl %}
+    {%-for term in acl.term %}
+      {%if term.get('src') %}
+        {%for src in term.get('src')%}
+set firewall family {{ fw.name }} filter {{ acl.name|upper }} term {{ term.name|upper }} from source-prefix-list {{ src|upper }}
+        {% endfor %}
+      {% endif %}
+      {%if term.get('dest') %}
+        {% for dest in term.get('dest')%}
+set firewall family {{ fw.name }} filter {{ acl.name|upper }} term {{ term.name|upper }} from destination-prefix-list {{ dest|upper }}
+        {% endfor %}
+      {% endif %}
+      {%if fw.get('name') == 'inet' %}
+        {%for proto in term.get('protocol')%}
+set firewall family {{ fw.name }} filter {{ acl.name|upper }} term {{ term.name|upper }} from protocol {{ proto }}
+        {% endfor %}
+      {% endif %}
+      {%for port in term.get('port')%}
+set firewall family {{ fw.name }} filter {{ acl.name|upper }} term {{ term.name|upper }} from port {{ port }}
+      {% endfor %}
+set firewall family {{ fw.name }} filter {{ acl.name|upper }} term {{ term.name|upper }} then count COUNT-{{ term.name|upper }}
+set firewall family {{ fw.name }} filter {{ acl.name|upper }} term {{ term.name|upper }} then {{ term.action }}
+    {% endfor %}
+  {% endfor %}
+{% endfor %}
+{% if policer %}
+  {% for rate in policer %}
+    {% if rate.get('percent')%}
+set firewall policer {{ rate.name|upper }} if-exceeding bandwidth-percent {{ rate.percent }}
+      {% else %}
+set firewall policer {{ rate.name|upper }} if-exceeding bandwidth-limit {{ rate.limit }}
+    {% endif %}
+set firewall policer {{ rate.name|upper }} if-exceeding burst-size-limit {{ rate.burst }}    
+set firewall policer {{ rate.name|upper }} then discard
+  {% endfor %}
+{% endif %}
+{#
 firewall {
 {%-for fw in firewall.family %} 
     family {{ fw.name }} {
@@ -56,3 +94,4 @@ firewall {
   {%endfor%}
 {%endif%}
 }
+#}

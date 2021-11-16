@@ -1,28 +1,47 @@
+{% for source in source %}
+  {% for destination in source.destination %}
+    {% for policy in destination.policy %}
+      {% for src in policy.src %}
+set security policies from-zone {{ source.name }} to-zone {{ destination.name }} policy {{ policy.name }} match source-address {{ src }}
+      {% endfor %}
+      {% for dest in policy.dest%}
+set security policies from-zone {{ source.name }} to-zone {{ destination.name }} policy {{ policy.name }} destination-address {{ dest }}
+      {% endfor %}
+      {% for appl in policy.application %}
+set security policies from-zone {{ source.name }} to-zone {{ destination.name }} policy {{ policy.name }} application {{ appl }}
+      {% endfor %}
+set security policies from-zone {{ source.name }} to-zone {{ destination.name }} policy {{ policy.name }} then {{ policy.action }}
+      {% endfor %}
+    {% endfor %}
+{% endfor %}
+
+{#
 security {
     policies {
 {% for source in source %}
-{% for destination in source.destination %}
+  {% for destination in source.destination %}
         from-zone {{ source.name }} to-zone {{ destination.name }} {
-{% for policy in destination.policy %}
+    {% for policy in destination.policy %}
             policy {{ policy.name }} {
                 match {
-{% for src in policy.src %}
+      {% for src in policy.src %}
                     source-address {{ src }};
-{% endfor %}
-{% for dest in policy.dest%}
+      {% endfor %}
+      {% for dest in policy.dest%}
                     destination-address {{ dest }};
-{% endfor %}
-{% for appl in policy.application %}
+      {% endfor %}
+      {% for appl in policy.application %}
                     application {{ appl }};
-{% endfor %}
+      {% endfor %}
                 }
                 then {
                     {{ policy.action }};
                 }
             }
-{% endfor %}
+    {% endfor %}
         }
-{% endfor %}
+  {% endfor %}
 {% endfor %}
     }
 }
+#}

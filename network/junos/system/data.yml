@@ -1,0 +1,31 @@
+---
+system:
+  hostname: some_device
+  domain_name: example.com
+  time_zone: "UTC"
+  name_server:
+    - 1.1.1.1 # Cloudflare
+    - 8.8.8.8 # Google
+  ntp: 
+    - 216.239.35.0 # Google
+    - 162.159.200.123 # Cloudflare
+  login:
+    classes:
+      - name: super
+        permissions: all
+  users:
+    - user: example
+      name: "Some User"
+      class: super
+      ssh_rsa: "some ssh public key"
+      password: "some password"
+      uid: 2000
+  services:
+    ssh:
+      version: v2
+      max_session: 10
+      connection_limit: 5
+    netconf:
+      ssh: true
+  syslog:
+    host: 192.0.2.1

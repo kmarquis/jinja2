@@ -5,15 +5,15 @@ protocols {
             local-as {{ bgp.asn }};
             type {{ bgp.type }};
             local-address {{ bgp.local_add }};
-{% for peer in bgp.peer %}
+  {% for peer in bgp.peer %}
             neighbor {{ peer.name }} {
                 description "{{ peer.description }}";
                 peer-as {{ peer.asn }};
-{%if peer.md5 is defined %}
+    {%if peer.md5 is defined %}
                 authentication-key "{{ peer.md5 }}";
-{% endif %}
+    {% endif %}
             }
-{% endfor %}
+  {% endfor %}
         }
     }
 }

@@ -1,3 +1,18 @@
+{% for address_book in address_book %}
+  {% for entry in address_book.entries %}
+set security address-book {{ address_book.name }} address {{ entry.name }} {{ entry.prefix }}
+set security address-book {{ address_book.name }} address {{ entry.name }} {{ entry.prefix }}
+  {% endfor %}
+  {%- if address_book.add_set is defined %}
+    {% for address_set in address_book.add_set %}
+      {% for set_entry in address_set.set %}
+set security address-book {{ address_book.name }} address-set {{ address_set.name }} {{ set_entry }}
+      {% endfor %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+
+{#
 security {
     address-book {
 {% for address_book in address_book %}
@@ -17,4 +32,5 @@ security {
         }
 {% endfor %}
     }
-}    
+}
+#}
