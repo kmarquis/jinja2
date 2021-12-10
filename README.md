@@ -37,3 +37,38 @@ set vlans First_Floor vlan-id 1
 set vlans Third_Floor description "VLAN THIRD FLOOR"
 set vlans Third_Floor vlan-id 3
 ```
+## YAML2DICT
+To help with troubleshooting or ensuring templates are correct when adding `for loops` or `if statement`, for some (like myself) find it easier to have a json output to work out what is happening
+```
+$ python3 yaml2dict.py test.yml
+{
+    "firewall": {
+        "family": [
+            {
+                "name": "inet",
+                "acl": [
+                    {
+                        "name": "web",
+                        "term": [
+                            {
+                                "name": "web",
+                                "dest": [
+                                    "webservers"
+                                ],
+                                "protocol": [
+                                    "tcp"
+                                ],
+                                "port": [
+                                    80,
+                                    443
+                                ],
+                                "action": "accept"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
+```

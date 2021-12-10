@@ -1,16 +1,16 @@
-{% for source in source %}
-  {% for destination in source.destination %}
+{% for sec_policy in sec_policy %}
+  {% for destination in sec_policy.destination %}
     {% for policy in destination.policy %}
       {% for src in policy.src %}
-set security policies from-zone {{ source.name }} to-zone {{ destination.name }} policy {{ policy.name }} match source-address {{ src }}
+set security policies from-zone {{ sec_policy.name }} to-zone {{ destination.name }} policy {{ policy.name }} match source-address {{ src }}
       {% endfor %}
       {% for dest in policy.dest%}
-set security policies from-zone {{ source.name }} to-zone {{ destination.name }} policy {{ policy.name }} destination-address {{ dest }}
+set security policies from-zone {{ sec_policy.name }} to-zone {{ destination.name }} policy {{ policy.name }} destination-address {{ dest }}
       {% endfor %}
       {% for appl in policy.application %}
-set security policies from-zone {{ source.name }} to-zone {{ destination.name }} policy {{ policy.name }} application {{ appl }}
+set security policies from-zone {{ sec_policy.name }} to-zone {{ destination.name }} policy {{ policy.name }} application {{ appl }}
       {% endfor %}
-set security policies from-zone {{ source.name }} to-zone {{ destination.name }} policy {{ policy.name }} then {{ policy.action }}
+set security policies from-zone {{ sec_policy.name }} to-zone {{ destination.name }} policy {{ policy.name }} then {{ policy.action }}
       {% endfor %}
     {% endfor %}
 {% endfor %}
@@ -18,9 +18,9 @@ set security policies from-zone {{ source.name }} to-zone {{ destination.name }}
 {#
 security {
     policies {
-{% for source in source %}
-  {% for destination in source.destination %}
-        from-zone {{ source.name }} to-zone {{ destination.name }} {
+{% for sec_policy in sec_policy %}
+  {% for destination in sec_policy.destination %}
+        from-zone {{ sec_policy.name }} to-zone {{ destination.name }} {
     {% for policy in destination.policy %}
             policy {{ policy.name }} {
                 match {

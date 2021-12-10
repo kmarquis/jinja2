@@ -1,0 +1,16 @@
+---
+firewall:
+  family:
+    - name: inet
+      acl:
+        - name: web
+          term:
+            - name: web
+              dest:
+                - webservers
+              protocol:
+                - tcp
+              port:
+                - 80
+                - 443
+              action: accept
