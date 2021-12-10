@@ -1,3 +1,16 @@
+{% for bgp in bgp %}
+set protocols bgp group {{ bgp.name }} local-as {{ bgp.asn }}
+set protocols bgp group {{ bgp.name }} type {{ bgp.type }}
+set protocols bgp group {{ bgp.name }} local-address {{ bgp.local_add }}
+  {% for peer in bgp.peer %}
+set protocols bgp group {{ bgp.name }} neighbor {{ peer.name }} description "{{ peer.description }}" 
+set protocols bgp group {{ bgp.name }} neighbor {{ peer.name }} peer-as {{ peer.asn }}
+    {%if peer.md5 is defined %}
+set protocols bgp group {{ bgp.name }} neighbor {{ peer.name }} authentication-key "{{ peer.md5|md5 }}"
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+{#
 protocols {
     bgp {
 {% for bgp in bgp %}
@@ -10,7 +23,7 @@ protocols {
                 description "{{ peer.description }}";
                 peer-as {{ peer.asn }};
     {%if peer.md5 is defined %}
-                authentication-key "{{ peer.md5 }}";
+                authentication-key "{{ peer.md5|md5 }}";
     {% endif %}
             }
   {% endfor %}
@@ -18,3 +31,4 @@ protocols {
     }
 }
 {% endfor %}
+#}

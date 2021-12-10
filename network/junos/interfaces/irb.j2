@@ -1,25 +1,34 @@
-{% macro v4(ip) %}
-            family inet {
-                address {{ ip }};
-            }
-{% endmacro %}
-{% macro v6(ip) %}
-            family inet6 {
-                address {{ ip }};
-            }
-{% endmacro %}
+{% for irb in irb %}
+set interfaces irb {{ irb.name }} description "{{ irb.description }}"
+  {% for family, vars in irb.family.items() %}
+    {% if "filter" in vars.keys() %}
+      {% if vars.filter.input is defined %}
+set interfaces irb {{ irb.name }} family {{ family }} input {{ vars.filter.input|upper }}
+      {% endif %}
+      {% if vars.filter.output is defined %}
+set interfaces irb {{ irb.name }} family {{ family }} output {{ vars.filter.output|upper }}
+      {% endif %}
+    {% endif %}
+    {% for ip in vars.ip %}
+set interfaces irb {{ irb.name }} family {{ family }} address {{ ip }}
+    {% endfor %}
+  {% endfor %}
+{% endfor %}
+{#
 interfaces {
     irb {
 {% for irb in irb %}
         unit {{ irb.name }} {
-            description "{{ irb.description }}"";
-{% if irb.ipv4 is defined %}
-{{ v4(irb.ipv4) }}
-{%- endif %}
-{% if irb.ipv6 is defined %}
-{{ v6(irb.ipv6) }}
-{%- endif %}
-        }
-{% endfor %}
+            description "{{ irb.description }}";
+  {% for family, addresses in irb.family.items() %}
+            family {{ family }} {
+    {% for address in addresses %} 
+                address {{ address }};   
+    {% endfor %}
+  {% endfor %}
+      }
     }
+{% endfor %}
+  }
 }
+#}

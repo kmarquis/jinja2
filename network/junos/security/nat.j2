@@ -1,32 +1,60 @@
-{% for static in static %}
-set security nat static rule-set {{ static.name }} from zone {{ }} rule {{ }} match destination-address-name {{ }}
-set security nat static rule-set {{ static.name }} from zone {{ }} rule {{ }} then static-nat prefix-name {{ }}
+{% for static in nat.static %}
+set security nat static rule-set {{ static.name }} from zone {{ static.from }}
+    {% for rule in static.rules %}
+set security nat static rule-set {{ static.name }} from zone {{ static.from }} rule {{ rule.name }} match destination-address-name {{ rule.dst_name }}
+set security nat static rule-set {{ static.name }} from zone {{ static.from }} rule {{ rule.name }} then static-nat prefix-name {{ rule.pfx_name }}
+    {% endfor %}
 {% endfor %}
-
-{%%}
-set security nat source pool {{  }} address {{ }}
-  {% if "no_translation" is defined %}
-set security nat source pool {{  }} port no-translation
-  {% endif %}
+{% for pool in nat.source.pools %}
+set security nat source pool {{ pool.name }} address {{ pool.ip }}
+    {% if "no_trans" in pool.keys() %}
+set security nat source pool {{ pool.name }} port no-translation
+    {% endif %}
+{% endfor %}  
+{% for ruleset in nat.source.rulesets %}
+set security nat source rule-set {{ ruleset.name }} description "{{ ruleset.description }}"
+set security nat source rule-set {{ ruleset.name }} from zone {{ ruleset.from  }}
+set security nat source rule-set {{ ruleset.name }} to zone {{ ruleset.to }}
+    {% for rule in ruleset.rules %}
+      {% if "src_add" in rule.keys() %}
+set security nat source rule-set {{ ruleset.name }} rule {{ rule.name }} match source-address {{ rule.src_add }}
+      {% endif%}
+      {% if "src_addbook" in rule.keys() %}
+set security nat source rule-set {{ ruleset.name }} rule {{ rule.name }} match source-address-name {{ rule.src_addbook }}
+      {% endif %}
+      {% if "src_nat" in rule.keys() %}
+set security nat source rule-set {{ ruleset.name }} rule {{ rule.name }} then source-nat pool {{ rule.src_nat.pool }}
+      {% else %}        
+set security nat source rule-set {{ ruleset.name }} rule {{ rule.name }} then source-nat interface
+      {% endif %}
+    {% endfor %}
 {% endfor %}
-set security nat source rule-set {{  }} description "{{  }}"
-set security nat source rule-set {{  }} from zone {{  }}
-set security nat source rule-set {{  }} to zone {{  }}
-set security nat source rule-set {{  }} rule {{  }} match source-address {{  }}
-set security nat source rule-set {{  }} rule {{  }} then source-nat pool {{  }}
-{%%}
-set security nat source rule-set {{  }} rule {{  }} then source-nat interface
-{% endif %}
-
-set security nat destination pool {{  }} address {{  }}
-
-set security nat destination rule-set {{  }} description "{{  }}"
-set security nat destination rule-set {{  }} from zone {{  }}
-set security nat destination rule-set {{  }} rule nintendo-switch match destination-address {{0.0.0.0/0}}
-set security nat destination rule-set {{  }} rule nintendo-switch match destination-port {{45000}} to {{65535}}
-set security nat destination rule-set {{  }} rule nintendo-switch match protocol tcp
-set security nat destination rule-set {{  }} rule nintendo-switch then {{ }} pool {{  }}
-
+{% for pool in nat.destination.pools %}
+set security nat destination pool {{ pool.name }} address {{ pool.ip }}
+{% endfor %}
+{% for ruleset in nat.destination.rulesets %}    
+set security nat destination rule-set {{ ruleset.name }} description "{{ ruleset.description }}"
+set security nat destination rule-set {{ ruleset.name }} from zone {{ ruleset.from }}
+  {% for rule in ruleset.rules %}
+    {% if "dst_add" in rule.keys() %}
+set security nat destination rule-set {{ ruleset.name }} rule {{ rule.name }} match destination-address {{ rule.dst_add }}
+      {% endif%}
+      {% if "dst_addbook" in rule.keys() %}
+set security nat destination rule-set {{ ruleset.name }} rule {{ rule.name }} match destination-address-name {{ rule.dst_addbook }}
+      {% endif%}
+      {% if "dst_ports" in rule.keys() %}        
+set security nat destination rule-set {{ ruleset.name }} rule {{ rule.name }} match destination-port {{ rule.dst_ports }}
+      {% endif%}
+      {% if "protocol" in rule.keys() %}
+set security nat destination rule-set {{ ruleset.name }} rule {{ rule.name }} match protocol {{ rule.protocol }}
+      {% endif%}
+      {% if "dst_nat" in rule.keys() %}   
+set security nat destination rule-set {{ ruleset.name }} rule {{ rule.name }} then destination-nat pool {{ rule.dst_nat.pool }}
+      {% else %}
+set security nat destination rule-set {{ ruleset.name }} rule {{ rule.name }} then destination-nat pool off
+    {% endif %}
+  {% endfor %}
+{% endfor %}
 {#
 security {
     nat {

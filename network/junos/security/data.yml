@@ -1,5 +1,5 @@
 ---
-source:
+sec_policy:
   - name: trust
     destination:
       - name: untrust
@@ -62,4 +62,53 @@ zones:
       - pim
     interfaces:
       - ge-0/0/0.100
-      - ge-0/0/1.200                
+      - ge-0/0/1.200
+nat:
+  static:
+    - name: test1
+      from: dmz
+      rules:
+        - name: test2
+          dst_name: test4
+          pfx_name: test5
+  source:
+    pools:
+      - name: some_device
+        ip: 192.0.2.1/32
+        no_trans: True
+    rulesets:
+      - name: test
+        description: test
+        from: dmz
+        to: untrust
+        rules:
+          - name: ian
+            src_add: 192.0.2.2/32
+      - name: test1
+        description: test1
+        from: dmz
+        to: untrust
+        rules:
+          - name: ian1
+            src_addbook: some_device
+            src_nat:
+              pool: ian1
+  destination:
+    pools:
+      - name: some_device
+        ip: 192.0.2.2/32
+    rulesets:
+      - name: test
+        description: test
+        from: trust
+        rules:
+          - name: test
+            dst_add: 192.0.2.3/32
+            dst_ports: 9000
+            protocol: tcp
+            dst_nat:
+              pool: test
+          - name: test1
+            dst_addbook: some_device
+            dst_ports: 9001
+            protocol: udp
