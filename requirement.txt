@@ -22,7 +22,7 @@ ncclient==0.6.9
 netaddr==0.8.0
 netmiko==3.4.0
 ntc-templates==3.0.0
-paramiko==2.8.0
+paramiko==2.10.1
 passlib==1.7.4
 pyasn1==0.4.8
 pycparser==2.18
