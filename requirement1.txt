@@ -5,7 +5,7 @@ cffi==1.15.0
 chardet==4.0.0
 charset-normalizer==2.0.7
 ciscoconfparse==1.6.4
-cryptography==35.0.0
+cryptography==39.0.1
 dnspython==2.1.0
 future==0.18.2
 huepy==1.2.1
